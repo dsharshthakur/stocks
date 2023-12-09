@@ -259,7 +259,7 @@ if selected_comp != " ":
                 #yesterday data
                 previous_day1 = past_data[past_data["Date"].dt.date == previous_day1_date.date()]  # str(round(past_data[-1:],4))
 
-                st.markdown("<h6 style = 'text-align:center'> Predicted</h6>", unsafe_allow_html=True)
+                st.markdown("<h6 style = 'text-align:center'>Predicted</h6>", unsafe_allow_html=True)
 
                 #yesterdaty predicted price
                 yesterday_predicted_price = previous_day1["Predictions"].round(2).to_string(index=False)
