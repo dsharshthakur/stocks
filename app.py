@@ -23,7 +23,8 @@ from prediction import PastDataFrame
 
 
 #page title
-st.title("Stock Prediction")
+st.markdown("<h1 style = 'text-align:center; '>Stock Minds</h1>", unsafe_allow_html = True)
+st.title("StocMinds")
 
 #initialization
 companies = None
