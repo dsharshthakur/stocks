@@ -93,8 +93,8 @@ if selected_comp != " ":
                 end_date = pd.to_datetime(end_date)
             except:
                 st.warning("The date should be in this format (YYYY-MM-DD).")
-                start_date = max(data["Date"].dt.strftime("%Y-%m-%d")
-                end_date = max(data["Date"].dt.strftime("%Y-%m-%d") #end date user input
+                start_date = max(data["Date"].dt.strftime("%Y-%m-%d"))
+                end_date = max(data["Date"].dt.strftime("%Y-%m-%d"))#end date user input
             
             if end_date <= start_date :
                 # display a warning message if user enters a end_date which is less than the start_date.
