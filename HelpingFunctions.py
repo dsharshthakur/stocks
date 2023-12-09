@@ -50,7 +50,7 @@ def load_data(tickertbl, company, startdate=None, enddate=None):
 
             return stockdata
         else:
-            selected_dates = stockdata[(stockdata["Date"] >= startdate) & (stockdata["Date"] <= enddate)]
+            selected_dates = stockdata[(stockdata["Date"].dt.date >= startdate) & (stockdata["Date"].dt.date <= enddate)]
             return selected_dates
 
 
