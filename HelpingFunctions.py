@@ -277,7 +277,8 @@ def WelcomeNote():
         """
         <h2> Welcome to Your Personal Stock Prediction Hub! </h2> 📈 
 
-        Hey there, fellow market enthusiast! 👋 Get ready to embark on an exciting journey through the dynamic world of stocks with my personally crafted Stock Prediction Model. 🌐
+        Hey there, fellow market enthusiast! 👋 Get ready to embark on an exciting journey through the dynamic world of stocks with my personally crafted Stock Prediction Model.
+        Predict price of more than 2400+ NSE listed Indian companies and 50+ Internation Companies.  🌐
 
         <h5> What's in Store for You?</h5>
         Explore the fascinating realm of financial forecasting as we delve into the intricate patterns and trends that shape the stock market. My custom-built model is designed to analyze historical stock data, unravel complex market dynamics, and make predictions that might just give you the edge in your investment decisions.
