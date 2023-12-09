@@ -55,7 +55,7 @@ def load_data(tickertbl, company, startdate=None, enddate=None):
 
 
 def trend(data, column, startdate=None, enddate=None):
-    filterdf = data[(data["Date"] >= startdate) & (data['Date'] <= enddate)]
+    filterdf = data[(data["Date"] >= startdate.dt.date) & (data['Date'].dt.date <= enddate)]
     graph1 = plt.figure(figsize=(15, 7))
     plt.plot(filterdf["Date"], filterdf[column])
     plt.xlabel("Date")
@@ -66,7 +66,7 @@ def trend(data, column, startdate=None, enddate=None):
 
 def predictedtrend(past_df, startdate=None, enddate=None):
     print("*************")
-    past_df_filtered = past_df[(past_df["Date"] >= startdate) & (past_df['Date'] <= enddate)]
+    past_df_filtered = past_df[(past_df["Date"].dt.date >= startdate) & (past_df['Date'].dt.date <= enddate)]
     past_df_filtered["Actual"] = past_df_filtered["Actual"]
 
     graph2 = plt.figure(figsize=(15, 7))
@@ -90,7 +90,7 @@ def futuretrend(futuredf, currentdf, column="Close"):
 
 
 def pastbargraph(past_df, column="Close", startdate=None, enddate=None):
-    past_df_filtered = past_df[(past_df["Date"] >= startdate) & (past_df['Date'] <= enddate)]
+    past_df_filtered = past_df[(past_df["Date"].dt.date >= startdate) & (past_df['Date'].dt.date <= enddate)]
     if startdate is not None and enddate is not None:
         fig = plt.figure(figsize=(15, 5))
         plt.setp(plt.gca().patches, 'width', 0.6)
