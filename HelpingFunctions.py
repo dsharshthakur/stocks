@@ -302,7 +302,7 @@ def WelcomeNote():
         <h5>Cheers to informed decisions and prosperous investments! 🥂</h5>
         
         <br>
-        <p style = 'color : blue'>Harsh Thakur<br>
-        <b>Creator of the Stock Prediction Model</b></p>
+        <p style = 'color : lightblue'>Harsh Thakur</p>
+        <p>Creator of the Stock Prediction Model</p>
         """
         , unsafe_allow_html=True)
