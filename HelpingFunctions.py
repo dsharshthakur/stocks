@@ -69,7 +69,8 @@ class DataLoad:
 def trend(data, column, startdate=None, enddate=None):
     filterdf = data[(data["Date"] >= startdate) & (data['Date'] <= enddate)]
     graph1 = plt.figure(figsize=(15, 7))
-    plt.plot(filterdf["Date"], filterdf[column])
+    plt.plot(filterdf["Date"], filterdf[column], label = "Actual")
+    plt.legend()
     plt.xlabel("Date")
     plt.ylabel("Closing Price")
 
@@ -107,7 +108,7 @@ def pastbargraph(past_df, column="Close", startdate=None, enddate=None):
     past_df_filtered["Date"] = past_df_filtered["Date"].dt.date
 
     if startdate is not None and enddate is not None:
-        fig = plt.figure(figsize=(15, 5))
+        fig = plt.figure(figsize=(15, 7))
         # plt.setp(plt.gca().patches, 'width', 0.6)
         # sns.set_style("darkgrid")
         print(type(past_df_filtered))
