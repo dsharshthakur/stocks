@@ -50,6 +50,9 @@ def PastDataFrame(stockdata, column="Close"):
     pastdf = stockdata[["Date", column]][100:]
     pastdf.rename(columns={column: "Actual"}, inplace=True, )
     pastdf["Predictions"] = predicted_values
+    pastdf["Actual"] = pastdf["Actual"].round(2)
+    pastdf["Predictions"]= pastdf["Predictions"].round(2)
+    
 
     return pastdf
 
