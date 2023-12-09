@@ -2,7 +2,7 @@ tensorflow
 matplotlib
 pandas 
 seaborn 
-sklearn 
+scikit-learn
 numpy 
 streamlit 
 yfinance 
