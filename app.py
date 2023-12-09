@@ -97,7 +97,7 @@ if selected_comp != " ":
                 end_date = None
             #end date user input
             
-            if and start_date!= None and end_date != None:
+            if start_date!= None and end_date != None:
                 if end_date <= start_date :
                     # display a warning message if user enters a end_date which is less than the start_date.
                     st.warning("Start Date should be before the end date.")
