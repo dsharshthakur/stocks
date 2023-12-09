@@ -107,7 +107,7 @@ def pastbargraph(past_df, column="Close", startdate=None, enddate=None):
 
     if startdate is not None and enddate is not None:
         fig = plt.figure(figsize=(15, 5))
-        plt.setp(plt.gca().patches, 'width', 0.6)
+        
         # sns.set_style("darkgrid")
         sns.barplot(data = past_df_filtered,x="Date", y="Actual", color="red", width=0.25, dodge=False)
         sns.barplot(data = past_df_filtered, x="Date", y="Predictions", color="lightgreen", width=0.25)
