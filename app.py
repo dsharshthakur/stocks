@@ -138,9 +138,8 @@ if selected_comp != " ":
 
                 pbar = pastbargraph(past_df=past_data, startdate=start_date, enddate=end_date)
                 st.pyplot(pbar)
-
-    else:
-        st.info("Data For this company is not available.")
+        else:
+            st.info("Data For this company is not available.")
 
 # future prediction
 futuredf = None
