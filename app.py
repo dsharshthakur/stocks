@@ -143,6 +143,8 @@ futuredf = None
 
 if selected_comp != " ":
     with tab2:
+        st.markdown("<h4>Let's dive into the future together. </h4>",unsafe_allow_html= True)
+        st.markdown("<br>", unsafe_allow_html = True)
         toggle = st.toggle(label="Forecast", key="toggle_1")
         if toggle == True:
 
