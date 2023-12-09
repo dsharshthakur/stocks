@@ -119,7 +119,7 @@ def pastbargraph(past_df, column="Close", startdate=None, enddate=None):
 
         if len(past_df_filtered) > 10:
             plt.xticks([])
-            st.info('For better visibility of the bars reduce the date range.")
+            st.info("For better visibility of the bars reduce the date range.")
         return fig
 
 
