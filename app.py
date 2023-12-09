@@ -93,14 +93,12 @@ if selected_comp != " ":
                 end_date = pd.to_datetime(end_date)
             except:
                 st.warning("The date should be in this format (YYYY-MM-DD).")
-                start_date = None
-                end_date = None
-            #end date user input
+                start_date = max(data["Date"].dt.strftime("%Y-%m-%d")
+                end_date = max(data["Date"].dt.strftime("%Y-%m-%d") #end date user input
             
-            if start_date!= None and end_date != None:
-                if end_date <= start_date :
-                    # display a warning message if user enters a end_date which is less than the start_date.
-                    st.warning("Start Date should be before the end date.")
+            if end_date <= start_date :
+                # display a warning message if user enters a end_date which is less than the start_date.
+                st.warning("Start Date should be before the end date.")
 
             else:
                 # filter the table based on the date range specified by the user.
@@ -141,8 +139,8 @@ if selected_comp != " ":
                 pbar = pastbargraph(past_df=past_data, startdate=start_date, enddate=end_date)
                 st.pyplot(pbar)
 
-        else:
-            st.info("Data For this company is not available.")
+    else:
+        st.info("Data For this company is not available.")
 
 # future prediction
 futuredf = None
