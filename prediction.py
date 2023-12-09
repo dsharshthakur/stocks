@@ -15,7 +15,7 @@ scaler = MinMaxScaler(feature_range=(0, 1))
 
 
 def transformdata(stockdata, column="Close", window_size=100):
-    # data = load_data(company=selected_comp,startdate=start_date,enddate=end_date)
+
     data = stockdata
 
     x = data[column]
@@ -67,7 +67,8 @@ def Forecast(dataframe, future_days=0, column="Close"):
                       -window_size:]  # array having last 100 days x values (price) , we kept it 100 because training was also done based on the window size of  100 days.
     past_100_days_x = past_100_days_x.reshape(1, -1)
 
-    x_updated = past_100_days_x.tolist()[0]  # list having past 100 days x values ,this list will keep on updating / moving
+    x_updated = past_100_days_x.tolist()[
+        0]  # list having past 100 days x values ,this list will keep on updating / moving
 
     all_predicted_y = []
     day = 0
@@ -83,7 +84,8 @@ def Forecast(dataframe, future_days=0, column="Close"):
             predicted_y = model.predict(new_x_array, verbose=False)
 
             all_predicted_y.extend(predicted_y.tolist()[0])  # add  the predicted value in y_predicted
-            x_updated.extend(predicted_y.tolist()[0])  # also , add the predicted value in x_updated to store the new input value
+            x_updated.extend(
+                predicted_y.tolist()[0])  # also , add the predicted value in x_updated to store the new input value
 
             day = day + 1
 
