@@ -112,11 +112,12 @@ def pastbargraph(past_df, column="Close", startdate=None, enddate=None):
         # plt.setp(plt.gca().patches, 'width', 0.6)
         # sns.set_style("darkgrid")
         print(type(past_df_filtered))
-        sns.barplot(data = past_df_filtered,x="Date", y="Actual", color="red", width=0.25)
-        sns.barplot(data = past_df_filtered, x="Date", y="Predictions", color="green", width=0.25)
+        sns.barplot(data = past_df_filtered,x="Date", y="Actual", color="red", width=0.25,label = "Actual")
+        sns.barplot(data = past_df_filtered, x="Date", y="Predictions", color="green", width=0.25,label = " Predicted")
 
         plt.xlabel("Dates")
         plt.ylabel("Closing Price")
+        plt. legend() 
 
         if len(past_df_filtered) > 10:
             plt.xticks([])
