@@ -94,7 +94,7 @@ def predictedtrend(past_df, startdate=None, enddate=None):
 
 def futuretrend(futuredf, currentdf, column="Close"):
     graph3 = plt.figure(figsize=(15, 5))
-    plt.plot(currentdf["Date"][-120:], currentdf[column][-150:], label="Past Values")
+    plt.plot(currentdf["Date"][-120:], currentdf[column][-120:], label="Past Values")
     plt.plot(futuredf["Date"], futuredf["Predictions"], color="green", label="Future Values")
     plt.legend(loc="upper left")
     plt.xlabel("Dates")
