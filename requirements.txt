@@ -1,0 +1,9 @@
+tensorflow 
+matplotlib.pyplot 
+pandas 
+seaborn 
+sklearn 
+numpy 
+streamlit 
+yfinance 
+random
