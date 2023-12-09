@@ -86,11 +86,17 @@ if selected_comp != " ":
     with tab1:
         if len(data) != 0 or data is not None:
             #start date user input
-            start_date = st.text_input(label="Start Date", value=min(data["Date"].dt.strftime("%Y-%m-%d")))
-            start_date = pd.to_datetime(start_date)
+            try:
+                start_date = st.text_input(label="Start Date (YYYY-MM-DD)", value=min(data["Date"].dt.strftime("%Y-%m-%d")))
+                start_date = pd.to_datetime(start_date)
+                end_date = st.text_input(label="End Date (YYYY-MM-DD)", value=max(data["Date"].dt.strftime("%Y-%m-%d")))
+                end_date = pd.to_datetime(end_date)
+            except:
+                st.warning("The date should be in this format (YYYY-MM-DD).")
+                start_date = None
+                end_date = None
             #end date user input
-            end_date = st.text_input(label="End Date", value=max(data["Date"].dt.strftime("%Y-%m-%d")))
-            end_date = pd.to_datetime(end_date)
+            
 
             if end_date <= start_date:
                 # display a warning message if user enters a end_date which is less than the start_date.
