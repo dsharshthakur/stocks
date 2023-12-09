@@ -104,16 +104,19 @@ def futuretrend(futuredf, currentdf, column="Close"):
 def pastbargraph(past_df, column="Close", startdate=None, enddate=None):
 
     past_df_filtered = past_df[(past_df["Date"] >= startdate) & (past_df['Date'] <= enddate)]
+    past_df_filtered["Date"] = past_df_filtered["Date"].dt.date
 
     if startdate is not None and enddate is not None:
         fig = plt.figure(figsize=(15, 5))
-        
+        # plt.setp(plt.gca().patches, 'width', 0.6)
         # sns.set_style("darkgrid")
-        sns.barplot(data = past_df_filtered,x="Date", y="Actual", color="red", width=0.25, dodge=False)
+        print(type(past_df_filtered))
+        sns.barplot(data = past_df_filtered,x="Date", y="Actual", color="red", width=0.25)
         sns.barplot(data = past_df_filtered, x="Date", y="Predictions", color="lightgreen", width=0.25)
 
         plt.xlabel("Dates")
         plt.ylabel("Closing Price")
+
         if len(past_df_filtered) > 10:
             plt.xticks([])
         return fig
