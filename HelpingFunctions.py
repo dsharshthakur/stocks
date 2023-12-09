@@ -1,11 +1,9 @@
 import random
-
-import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 import yfinance as yf
-
 
 def companyticker(country=None, all_comp=False):
     if country == "Indian Companies" and all_comp == False:
@@ -30,32 +28,46 @@ def companyticker(country=None, all_comp=False):
 
         return all_companies
 
-
-def load_data(tickertbl, company, startdate=None, enddate=None):
-    selected_comp_ticker = tickertbl[tickertbl["name"] == company]["ticker"].to_string(index=False)
-    try:
-        stockdata = yf.download(selected_comp_ticker, start="2018-01-01")
+class DataLoad:
+    def load_data(self, tickertbl, company, startdate=None, enddate=None):
+        self.selected_comp_ticker = tickertbl[tickertbl["name"] == company]["ticker"].to_string(index=False)
         try:
-            stockdata.reset_index(inplace=True)
-            stockdata["Date"] = stockdata["Date"].dt.date
+            stockdata = yf.download(self.selected_comp_ticker, start="2018-01-01")
+            stockdata.reset_index(inplace = True)
 
         except:
-            print("Select range carefully")
+            print("Data for this company is not available.")
 
-    except:
-        print("Data for this company is not available.")
-    else:
-
-        if startdate is None and enddate is None:
-
-            return stockdata
         else:
-            selected_dates = stockdata[(stockdata["Date"].dt.date >= startdate) & (stockdata["Date"].dt.date <= enddate)]
-            return selected_dates
+            if startdate is None and enddate is None:
+                return stockdata
+            else:
+                selected_dates = stockdata[(stockdata["Date"]  >= startdate) & (stockdata["Date"] <= enddate)]
+                return selected_dates
+
+    def todaysinfo(self):
+        TodayInfo = yf.Ticker(self.selected_comp_ticker)
+        try:
+            TodayOpen = TodayInfo.info['open']
+        except:
+            TodayOpen = "Not Available"
+
+        try:
+            RecentPrice =   TodayInfo.info['currentPrice']
+        except:
+            RecentPrice =  "Not Available"
+
+        try :
+            TodayHigh = TodayInfo["dayhigh"]
+        except :
+            TodayHigh = "Not Available"
+
+        return RecentPrice , TodayOpen , TodayHigh
+
 
 
 def trend(data, column, startdate=None, enddate=None):
-    filterdf = data[(data["Date"] >= startdate.dt.date) & (data['Date'].dt.date <= enddate)]
+    filterdf = data[(data["Date"] >= startdate) & (data['Date'] <= enddate)]
     graph1 = plt.figure(figsize=(15, 7))
     plt.plot(filterdf["Date"], filterdf[column])
     plt.xlabel("Date")
@@ -65,8 +77,8 @@ def trend(data, column, startdate=None, enddate=None):
 
 
 def predictedtrend(past_df, startdate=None, enddate=None):
-    print("*************")
-    past_df_filtered = past_df[(past_df["Date"].dt.date >= startdate) & (past_df['Date'].dt.date <= enddate)]
+
+    past_df_filtered = past_df[(past_df["Date"] >= startdate) & (past_df['Date'] <= enddate)]
     past_df_filtered["Actual"] = past_df_filtered["Actual"]
 
     graph2 = plt.figure(figsize=(15, 7))
@@ -90,14 +102,15 @@ def futuretrend(futuredf, currentdf, column="Close"):
 
 
 def pastbargraph(past_df, column="Close", startdate=None, enddate=None):
-    past_df_filtered = past_df[(past_df["Date"].dt.date >= startdate) & (past_df['Date'].dt.date <= enddate)]
+
+    past_df_filtered = past_df[(past_df["Date"] >= startdate) & (past_df['Date'] <= enddate)]
+
     if startdate is not None and enddate is not None:
         fig = plt.figure(figsize=(15, 5))
         plt.setp(plt.gca().patches, 'width', 0.6)
         # sns.set_style("darkgrid")
         sns.barplot(x=past_df_filtered["Date"], y=past_df_filtered["Actual"], color="red", width=0.25, dodge=False)
-        sns.barplot(x=past_df_filtered["Date"], y=past_df_filtered["Predictions"], color="lightgreen", width=0.25,
-                    dodge=False)
+        sns.barplot(x=past_df_filtered["Date"], y=past_df_filtered["Predictions"], color="lightgreen", width=0.25)
 
         plt.xlabel("Dates")
         plt.ylabel("Closing Price")
@@ -106,7 +119,7 @@ def pastbargraph(past_df, column="Close", startdate=None, enddate=None):
         return fig
 
 
-def DisplayDisclaimer():
+def displaydisclaimer():
     disclaimer_head = "<h4 style = 'text-align : center'>Disclaimer on Stock Prediction.</h4>"
     st.markdown(disclaimer_head, unsafe_allow_html=True)
 
@@ -288,7 +301,3 @@ def WelcomeNote():
         <b>Creator of the Stock Prediction Model</b></p>
         """
         , unsafe_allow_html=True)
-# def PastPrediction(data,startdate,enddate,column):
-#     # filterdf = data[(data["Date"] >= startdate) & (data['Date'] <= enddate) ][data[column]]
-#     filterdf = data.query(f"Date >= {startdate} and Date <= {enddate}")[column]
-#     return filterdf
