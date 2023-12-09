@@ -82,7 +82,7 @@ if selected_comp != " ":
 
             else:
                 # filter the table based on the date range specified by the user.
-                filterdata = data[(data["Date"] >= start_date) & (data["Date"] <= end_date)]
+                filterdata = data[(data["Date"].dt.date >= start_date) & (data["Date"].dt.date <= end_date)]
 
                 heading_2 = "<h4 style='color :blue ; text-align: center;'>Stock Closing</h4>"
                 st.markdown(heading_2, unsafe_allow_html=True)
