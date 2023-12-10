@@ -50,9 +50,6 @@ def PastDataFrame(stockdata, column="Close"):
     pastdf = stockdata[["Date", column]][100:]
     pastdf.rename(columns={column: "Actual"}, inplace=True, )
     pastdf["Predictions"] = predicted_values
-    pastdf["Actual"] = pastdf["Actual"].round(2)
-    pastdf["Predictions"]= pastdf["Predictions"].round(2)
-    
 
     return pastdf
 
@@ -66,12 +63,10 @@ def Forecast(dataframe, future_days=0, column="Close"):
 
     past_x_scaled = scaler.transform(past_x.values.reshape(-1, 1))
 
-    past_100_days_x = past_x_scaled[
-                      -window_size:]  # array having last 100 days x values (price) , we kept it 100 because training was also done based on the window size of  100 days.
+    past_100_days_x = past_x_scaled[-window_size:]  # array having last 100 days x values (price) , we kept it 100 because training was also done based on the window size of  100 days.
     past_100_days_x = past_100_days_x.reshape(1, -1)
 
-    x_updated = past_100_days_x.tolist()[
-        0]  # list having past 100 days x values ,this list will keep on updating / moving
+    x_updated = past_100_days_x.tolist()[0]  # list having past 100 days x values ,this list will keep on updating / moving
 
     all_predicted_y = []
     day = 0
@@ -104,19 +99,41 @@ def Forecast(dataframe, future_days=0, column="Close"):
     # unscaling
     y_unscaled = scaler.inverse_transform(np.array(all_predicted_y).reshape(1, -1))
     y_unscaled = y_unscaled.tolist()[0]
-
+    print("yunscaled 1,", len(y_unscaled))
+    print("total days ",future_days)
     return y_unscaled
 
 
 def ForecastDataFrame(predicted_values, future_days=0):
-    start = pd.to_datetime('today').date()
-    if future_days > 0:
-        end = pd.to_datetime(start) + pd.Timedelta(days=future_days)
+
+    start_from = pd.to_datetime('today').date() #todays(current) date
+
+
+    if start_from.weekday() == 5: #check if its a saturday
+        start_from = pd.to_datetime('today').date() + pd.Timedelta(days=2) #add 2 days and return the date ,i.e (monday)
+    elif start_from.weekday() == 6: #check if its a sunday
+        start_from = pd.to_datetime('today').date() + pd.Timedelta(days=1) #add 1 days and return the date ,i.e (monday)
     else:
-        end = start
+        pass
 
+    #if user want prediction of "n" next days
+
+    if future_days > 0 :
+        end = pd.to_datetime(start_from) +pd.offsets.BDay(future_days)
+        #if user want prediction for the same (current) day then end day will be same as start date
+    else:
+        end = start_from
+
+    #furure dataframe
     df = pd.DataFrame()
-    df["Date"] = pd.date_range(start=start, end=end)
+    df["Date"] = pd.bdate_range(start=start_from, end = end)
 
-    df["Predictions"] = predicted_values
-    return df
+    df["Predictions"] = ["{:.2f}".format(i) for i in predicted_values]
+    df["Predictions"] = [float(i) for i in df["Predictions"]]
+
+    if start_from == pd.to_datetime("today").date(): #if the start date is same as  current date
+        return df[1:] #show from nex today . i.e dont the current day price
+    else: #if its not the current date
+        df.index = [i for i in range(1 , len(df) + 1)]
+        return df[:-1] #dont show the last a value
+
