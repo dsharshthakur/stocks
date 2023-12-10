@@ -23,8 +23,7 @@ from prediction import PastDataFrame
 
 
 #page title
-st.markdown("<h1 style = 'text-align:center; '>StockMinds</h1>", unsafe_allow_html = True)
-
+st.title("Stock Prediction")
 
 #initialization
 companies = None
@@ -67,12 +66,17 @@ with st.sidebar as sbar:
 #initialization
 data = None
 past_data = None
-
+current_date =  pd.to_datetime("today").date()
 if selected_comp != " ":
 
     # load data
     cls_obj = DataLoad()
     data = cls_obj.load_data(tickertbl=companies, company=selected_comp)
+    if len(data.columns) > 7:
+        st.warning("This company is delisted from NSE or the name has me changed.")
+        data = None
+        selected_comp = " "
+
 
     # if data is None:
     #     time.sleep(1)
@@ -84,19 +88,17 @@ if selected_comp != " ":
     tab1, tab2, tab3, tab4 = st.tabs(["Details", "Forecast", "Performance", "About"])
 
     with tab1:
-        if len(data) != 0 or data is not None:
+        if data is not None:
+            print("************************************************* ***********************************************************************")
+            print(type(data))
             #start date user input
-            try:
-                start_date = st.text_input(label="Start Date (YYYY-MM-DD)", value=min(data["Date"].dt.strftime("%Y-%m-%d")))
-                start_date = pd.to_datetime(start_date)
-                end_date = st.text_input(label="End Date (YYYY-MM-DD)", value=max(data["Date"].dt.strftime("%Y-%m-%d")))
-                end_date = pd.to_datetime(end_date)
-            except:
-                st.warning("The date should be in this format (YYYY-MM-DD).")
-                start_date = max(data["Date"].dt.strftime("%Y-%m-%d"))
-                end_date = max(data["Date"].dt.strftime("%Y-%m-%d"))#end date user input
-            
-            if end_date <= start_date :
+            start_date = st.text_input(label="Start Date", value=min(data["Date"].dt.strftime("%Y-%m-%d")))
+            start_date = pd.to_datetime(start_date)
+            #end date user input
+            end_date = st.text_input(label="End Date", value=max(data["Date"].dt.strftime("%Y-%m-%d")))
+            end_date = pd.to_datetime(end_date)
+
+            if end_date <= start_date:
                 # display a warning message if user enters a end_date which is less than the start_date.
                 st.warning("Start Date should be before the end date.")
 
@@ -136,8 +138,10 @@ if selected_comp != " ":
                 st.markdown("<h6 style = 'text-align: center;'>({} : {})</h6>".format(start_string, end_string),
                             unsafe_allow_html=True)
 
-                pbar = pastbargraph(past_df=past_data, startdate=start_date, enddate=end_date)
+
+                pbar = pastbargraph(past_df =past_data, startdate=start_date, enddate=end_date)
                 st.pyplot(pbar)
+
         else:
             st.info("Data For this company is not available.")
 
@@ -146,12 +150,10 @@ futuredf = None
 
 if selected_comp != " ":
     with tab2:
-        st.markdown("<h4>Let's dive into the future together. </h4>",unsafe_allow_html= True)
-        st.markdown("<br>", unsafe_allow_html = True)
         toggle = st.toggle(label="Forecast", key="toggle_1")
         if toggle == True:
 
-            #display disclaimer for future prediction
+            #display disclaimer  for future prediction
             displaydisclaimer()
             chck_box1 = st.checkbox(label="I Understand, Please Continue.")
 
@@ -169,12 +171,11 @@ if selected_comp != " ":
                 current_price ,today_open_price, today_high_price = cls_obj.todaysinfo()
 
                 with col1:
-                    current_date = pd.to_datetime("today").date()
+
                     st.markdown("<h6  style = 'text-align:center'>Today's Date </h6>", unsafe_allow_html=True)
                     st.markdown("<p  style =  'text-align:center; color:blue;'>{}</p>".format(current_date), unsafe_allow_html=True)
 
                 with col2:
-                    # current_day_open =data[data["Date"] == pd.to_datetime("today").date()]["Open"].round(2).to_string(index=False)
                     st.markdown("<h6  style = 'text-align:center'>Open Price</h6>", unsafe_allow_html=True)
                     st.markdown("<p  style = 'text-align:center ; color:blue;'>{}</p>".format(today_open_price), unsafe_allow_html=True)
 
@@ -188,7 +189,6 @@ if selected_comp != " ":
 
                 with col5:
                     st.markdown("<h6 style = 'text-align:center '>Close Price (predicted)</h6>", unsafe_allow_html=True)
-                    # st.markdown("<p style = 'text-align:center'>(predicted)</p>", unsafe_allow_html=True)
                     current_day_predicted = Forecast(data, future_days=0)
                     current_day_predicted = round(current_day_predicted[0], 2)
 
@@ -210,12 +210,11 @@ if selected_comp != " ":
 
                 with col2:
                     st.markdown("<h5 style = 'text-align:center'>Today</h5>", unsafe_allow_html=True)
-                    cur_date = pd.to_datetime("today").date()
-                    st.markdown("<p style = 'text-align: center'>{}</p>".format(cur_date), unsafe_allow_html=True)
+                    st.markdown("<p style = 'text-align: center'>{}</p>".format(current_date), unsafe_allow_html=True)
 
                 with col3:
                     st.markdown("<h5 style = 'text-align:center'>Next Date</h5>", unsafe_allow_html=True)
-                    next_date = cur_date + pd.Timedelta(days=user_input_days)
+                    next_date = current_date + pd.Timedelta(days=user_input_days)
                     st.markdown("<p style = 'text-align: center'>{}</p>".format(next_date), unsafe_allow_html=True)
 
                 #stock data copy
@@ -223,7 +222,7 @@ if selected_comp != " ":
                 future = Forecast(dataframe=data_2, future_days=user_input_days)
                 futuredf = ForecastDataFrame(predicted_values=future, future_days=user_input_days)
 
-                # future / forecast graph
+                # future / forecast    graph
 
                 future_trend = futuretrend(futuredf=futuredf, currentdf=data_2)
                 st.pyplot(future_trend)
@@ -238,7 +237,7 @@ if selected_comp != " ":
                 st.markdown("<p> The table shows the next {} days predicted stock price.<p>".format(user_input_days),
                             unsafe_allow_html=True)
 
-                st.dataframe(displaytbl[1:],
+                st.dataframe(displaytbl,
                              use_container_width=True)  # display from next 1 day i.e excluding current day data
 
 # performance area
@@ -254,17 +253,21 @@ if selected_comp != " ":
             st.markdown('<hr>', unsafe_allow_html=True)
             st.markdown("<h5 style = 'text-align:center'>Yesterday</h5>", unsafe_allow_html=True)
 
+            if (current_date - data.iloc[-1]["Date"].date()).days > 1:
+                st.info("Showing result for {} as market was closed yesterday.".format(data.iloc[-1]["Date"].date().strftime("%Y-%m-%d")))
+
             # layout
             col1, col2 = st.columns(2)
 
             with col1:
                 #yesterday date
-                previous_day1_date = pd.to_datetime("today") - pd.Timedelta(days=1)
+
+                previous_day1_date = data.iloc[-1]["Date"].date()
 
                 #yesterday data
-                previous_day1 = past_data[past_data["Date"].dt.date == previous_day1_date.date()]  # str(round(past_data[-1:],4))
+                previous_day1 = past_data[past_data["Date"].dt.date == previous_day1_date]  # str(round(past_data[-1:],4))
 
-                st.markdown("<h6 style = 'text-align:center'>Predicted</h6>", unsafe_allow_html=True)
+                st.markdown("<h6 style = 'text-align:center'> Predicted</h6>", unsafe_allow_html=True)
 
                 #yesterdaty predicted price
                 yesterday_predicted_price = previous_day1["Predictions"].round(2).to_string(index=False)
