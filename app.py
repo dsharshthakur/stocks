@@ -268,7 +268,7 @@ if selected_comp != " ":
 
                 #yesterdaty predicted price
                 yesterday_predicted_price = previous_day1["Predictions"].round(2).to_string(index=False)
-                st.markdown(f"<p style = 'text-align:center'>{round(float(yesterday_predicted_price),2)}</p>", unsafe_allow_html=True)
+                st.markdown(f"<p style = 'text-align:center'>{yesterday_predicted_price}</p>", unsafe_allow_html=True)
 
             with col2:
                 st.markdown("<h6 style = 'text-align:center'>Actual</h6>", unsafe_allow_html=True)
