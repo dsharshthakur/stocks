@@ -275,7 +275,7 @@ if selected_comp != " ":
 
                 #yesterday actual price
                 yesterday_actual_price = previous_day1["Actual"].round(2).to_string(index=False)
-                st.markdown(f"<p style = 'text-align:center'>{round(float(yesterday_actual_price),2)}</p>", unsafe_allow_html=True)
+                st.markdown(f"<p style = 'text-align:center'>{yesterday_actual_price}</p>", unsafe_allow_html=True)
 
             #bar graph for comparing yesterday Predicted aand actual price
             pgraph = performancegraph(yesterday_predicted_price, yesterday_actual_price)
