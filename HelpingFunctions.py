@@ -199,7 +199,7 @@ def Conclusion(predicted, actual):
 def performancegraph(predicted, actual):
     dt = {
         "labels": ["Prediction", "Actual"],
-        "Values": [float(predicted), float(actual)]
+        "Values": [predicted, actual]
     }
     sns.set_style("darkgrid")
     fig = plt.figure(figsize=(12, 4))
