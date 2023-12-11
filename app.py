@@ -218,11 +218,12 @@ if selected_comp != " ":
                 # fetch today's(current day) data
                 current_price ,today_open_price, today_high_price = cls_obj.todaysinfo()
 
-                current_price, today_open_price, today_high_price=  [i if str(i).isalpha() else i * currency_rate for i in [current_price ,today_open_price, today_high_price ]]
                 if in_inr == True:
                     currency_rate = cls_obj.currencyrate(convert_to = "INR")
                 else:
                     currency_rate = cls_obj.currencyrate(convert_to = "USD")
+                
+                current_price, today_open_price, today_high_price=  [i if str(i).isalpha() else i * currency_rate for i in [current_price ,today_open_price, today_high_price ]]
                 
                 with col1:
 
