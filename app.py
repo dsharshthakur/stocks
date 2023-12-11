@@ -225,10 +225,19 @@ if selected_comp != " ":
                     pass
                 else:
                     currate = CurrencyRates().get_rate("USD", "INR")
-                    current_price = current_price * currate
-                    today_open_price = today_open_price * currate
-                    
-                    today_high_price = today_high_price * currate
+                    if current_price.isnum():
+                        current_price = current_price * currate
+                    else:
+                        pass 
+                    if today_open_price.isnum():  
+                        today_open_price = today_open_price * currate
+                    else:
+                        pass
+                    if today_high_price.isnum():
+                        today_high_price = today_open_price * currate
+                    else:
+                        pass
+                        
                 with col1:
 
                     st.markdown("<h6  style = 'text-align:center'>Today's Date </h6>", unsafe_allow_html=True)
