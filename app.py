@@ -220,24 +220,27 @@ if selected_comp != " ":
 
                 # fetch today's(current day) data
                 current_price ,today_open_price, today_high_price = cls_obj.todaysinfo()
-                print("=======", today_high_price , "*" )
-                if currency_radio == "USD":
+
+                if in_usd == True:
                     pass
                 else:
-                    currate = CurrencyRates().get_rate("USD", "INR")
+                    currate = CurrencyRates().get_rate( "INR" , "USD")
                     if str(current_price).isalpha():
                         pass
                     else:
-                        current_price = current_price * currate 
-                    if str(today_open_price).isalpha():  
+                        current_price = current_price * currate
+                    if str(today_open_price).isalpha() :
                         pass
                     else:
                         today_open_price = today_open_price * currate
-                    if today_high_price.isalpha():
+                    if str(today_high_price).isalpha():
                         pass
                     else:
-                        today_high_price = today_open_price * currate
-                        
+                        today_high_price = today_high_price * currate
+
+
+                    print("================",today_high_price, "*" , currate)
+                    today_high_price = today_high_price * currate
                 with col1:
 
                     st.markdown("<h6  style = 'text-align:center'>Today's Date </h6>", unsafe_allow_html=True)
