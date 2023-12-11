@@ -227,6 +227,7 @@ if selected_comp != " ":
                     currate = CurrencyRates().get_rate("USD", "INR")
                     current_price = current_price * currate
                     today_open_price = today_open_price * currate
+                    print("=======", today_high_price , "*" , currate)
                     today_high_price = today_high_price * currate
                 with col1:
 
