@@ -71,8 +71,8 @@ data = None
 past_data = None
 current_date =  pd.to_datetime("today").date()
 
-in_usd = True
-in_inr = False
+in_inr = True
+in_usd = False
 
 if selected_comp != " ":
 
@@ -81,7 +81,9 @@ if selected_comp != " ":
 
     data = cls_obj.load_data(tickertbl=companies, company=selected_comp)
 
-    print("Original ___________________________________", data)
+    print("___________________________________Original ___________________________________")
+    print(data)
+
     if data is not None :
         if len(data.columns) > 7:
             st.warning("This company is delisted from NSE or the name has been changed.")
@@ -91,9 +93,13 @@ if selected_comp != " ":
             # update the currency rate to USD
             if currency_radio == "INR":
                 currency_rate = cls_obj.currencyrate(convert_to = "INR")
+                in_inr = True
+                in_usd = False
 
             else:
                 currency_rate = cls_obj.currencyrate(convert_to= "USD")
+                in_inr = False
+                in_usd = True
 
             data[['Open', 'High', 'Low', 'Close', 'Adj Close']] = data[ ['Open', 'High', 'Low', 'Close','Adj Close']] * currency_rate
 
@@ -146,8 +152,11 @@ if selected_comp != " ":
 
                 #dataframe with past actual and predicted close stock price
                 data_in_usd = data.copy()
-                curr_to_usd = cls_obj.currencyrate(convert_to="USD")
-                data_in_usd[['Open', 'High', 'Low', 'Close', 'Adj Close']] = data_in_usd[
+                if in_usd == True:
+                    pass
+                else:
+                    curr_to_usd = cls_obj.currencyrate(convert_to="USD")
+                    data_in_usd[['Open', 'High', 'Low', 'Close', 'Adj Close']] = data_in_usd[
                                                                                  ['Open', 'High', 'Low', 'Close',
                                                                                   'Adj Close']] * curr_to_usd
 
@@ -164,6 +173,8 @@ if selected_comp != " ":
                 else:
                     usd_to_inr =  CurrencyRates().get_rate("USD" , "INR")
                     past_data[["Actual", "Predictions"]] = past_data[["Actual", "Predictions"]] * usd_to_inr
+                    print("++++++++++++++++++++++++++++++After+++++++++++++++++++++++")
+                    print(past_data)
 
 
                 past_prediction_trend = predictedtrend(past_data, startdate=start_date, enddate=end_date)
@@ -207,14 +218,23 @@ if selected_comp != " ":
                 # layout
                 col1, col2, col3, col4 ,col5= st.columns(5)
 
+                # fetch today's(current day) data
                 current_price ,today_open_price, today_high_price = cls_obj.todaysinfo()
 
+                if currency_radio == "USD":
+                    pass
+                else:
+                    currate = CurrencyRates().get_rate("USD", "INR")
+                    current_price = current_price * currate
+                    today_open_price = today_open_price * currate
+                    today_high_price = today_high_price * currate
                 with col1:
 
                     st.markdown("<h6  style = 'text-align:center'>Today's Date </h6>", unsafe_allow_html=True)
                     st.markdown("<p  style =  'text-align:center; color:blue;'>{}</p>".format(current_date), unsafe_allow_html=True)
 
                 with col2:
+
                     st.markdown("<h6  style = 'text-align:center'>Open Price</h6>", unsafe_allow_html=True)
                     st.markdown("<p  style = 'text-align:center ; color:blue;'>{}</p>".format(today_open_price), unsafe_allow_html=True)
 
