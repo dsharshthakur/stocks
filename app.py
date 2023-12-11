@@ -64,7 +64,7 @@ with st.sidebar as sbar:
         st.markdown(f"<h1 style ='text-align: center; color: green'>{len(companies)}</h1>", unsafe_allow_html=True)
         st.markdown(f"<h4 style ='text-align: center'>Companies Available ", unsafe_allow_html=True)
     #radio button
-    currency_radio = st.radio(label = "Choose Currency", options = ["INR" , "USD"])
+    currency_radio = st.radio(label = "Choose a currency:", options = ["INR" , "USD"])
 
 
 # initialization
