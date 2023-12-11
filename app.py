@@ -225,18 +225,18 @@ if selected_comp != " ":
                     pass
                 else:
                     currate = CurrencyRates().get_rate("USD", "INR")
-                    if current_price.isnum():
-                        current_price = current_price * currate
+                    if str(current_price).isalpha():
+                        pass
                     else:
-                        pass 
-                    if today_open_price.isnum():  
+                        current_price = current_price * currate 
+                    if str(today_open_price).isalpha():  
+                        pass
+                    else:
                         today_open_price = today_open_price * currate
-                    else:
+                    if today_high_price.isalpha():
                         pass
-                    if today_high_price.isnum():
+                    else:
                         today_high_price = today_open_price * currate
-                    else:
-                        pass
                         
                 with col1:
 
