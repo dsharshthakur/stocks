@@ -78,25 +78,24 @@ if selected_comp != " ":
         selected_comp = " "
 
 
-    # if data is None:
-    #     time.sleep(1)
-    #     data = load_data(tickertbl=companies, company=selected_comp)
-    # else:
-    #     pass
-    #
-    #creating layout for page
+     #creating layout for page
     tab1, tab2, tab3, tab4 = st.tabs(["Details", "Forecast", "Performance", "About"])
 
     with tab1:
         if data is not None:
-            print("************************************************* ***********************************************************************")
-            print(type(data))
-            #start date user input
-            start_date = st.text_input(label="Start Date", value=min(data["Date"].dt.strftime("%Y-%m-%d")))
-            start_date = pd.to_datetime(start_date)
-            #end date user input
-            end_date = st.text_input(label="End Date", value=max(data["Date"].dt.strftime("%Y-%m-%d")))
-            end_date = pd.to_datetime(end_date)
+            try:
+                #start date user input
+                start_date = st.text_input(label="Start Date", value=min(data["Date"].dt.strftime("%Y-%m-%d")))
+                start_date = pd.to_datetime(start_date)
+                #end date user input
+                end_date = st.text_input(label="End Date", value=max(data["Date"].dt.strftime("%Y-%m-%d")))
+                end_date = pd.to_datetime(end_date)
+            
+            except:
+                st.warning("Invalid date format. The Date should be in this format YYYY-MM-DD .")
+            
+                start_date = min(data["Date"])
+                end_date = max(data["Date"])
 
             if end_date <= start_date:
                 # display a warning message if user enters a end_date which is less than the start_date.
