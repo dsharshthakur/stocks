@@ -173,8 +173,6 @@ if selected_comp != " ":
                 else:
                     usd_to_inr =  CurrencyRates().get_rate("USD" , "INR")
                     past_data[["Actual", "Predictions"]] = past_data[["Actual", "Predictions"]] * usd_to_inr
-                    print("++++++++++++++++++++++++++++++After+++++++++++++++++++++++")
-                    print(past_data)
 
 
                 past_prediction_trend = predictedtrend(past_data, startdate=start_date, enddate=end_date)
@@ -222,6 +220,10 @@ if selected_comp != " ":
                 current_price ,today_open_price, today_high_price = cls_obj.todaysinfo()
 
                 current_price, today_open_price, today_high_price=  [i if str(i).isalpha() else i * currency_rate for i in [current_price ,today_open_price, today_high_price ]]
+                if in_inr == True:
+                    currency_rate = cls_obj.currencyrate(convert_to = "INR")
+                else:
+                    currency_rate = cls_obj.currencyrate(convert_to = "USD")
                 
                 with col1:
 
@@ -231,15 +233,15 @@ if selected_comp != " ":
                 with col2:
 
                     st.markdown("<h6  style = 'text-align:center'>Open Price</h6>", unsafe_allow_html=True)
-                    st.markdown("<p  style = 'text-align:center ; color:blue;'>{}</p>".format(today_open_price), unsafe_allow_html=True)
+                    st.markdown("<p  style = 'text-align:center ; color:blue;'>{:.2f}</p>".format(today_open_price), unsafe_allow_html=True)
 
                 with col3:
                     st.markdown("<h6  style = 'text-align:center'>High Price</h6>", unsafe_allow_html=True)
-                    st.markdown("<p  style = 'text-align:center ; color:blue;'>{}</p>".format(today_high_price), unsafe_allow_html=True)
+                    st.markdown("<p  style = 'text-align:center ; color:blue;'>{:.2f}</p>".format(today_high_price), unsafe_allow_html=True)
                 with col4:
                     # current_day_open =data[data["Date"] == pd.to_datetime("today").date()]["Open"].round(2).to_string(index=False)
                     st.markdown("<h6  style = 'text-align:center'>Current Price</h6>", unsafe_allow_html=True)
-                    st.markdown("<p  style = 'text-align:center ; color:blue;'>{}</p>".format(current_price), unsafe_allow_html=True)
+                    st.markdown("<p  style = 'text-align:center ; color:blue;'>{:.2f}</p>".format(current_price), unsafe_allow_html=True)
 
                 with col5:
                     st.markdown("<h6 style = 'text-align:center '>Close Price (predicted)</h6>", unsafe_allow_html=True)
