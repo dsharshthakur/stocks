@@ -132,8 +132,8 @@ def ForecastDataFrame(predicted_values, future_days=0):
     df["Predictions"] = [float(i) for i in df["Predictions"]]
 
     if start_from == pd.to_datetime("today").date(): #if the start date is same as  current date
-        return df[1:] #show from next today . i.e dont show the current day price
-    else: #if its not same as the current date
+        return df[1:] #show from nex today . i.e dont the current day price
+    else: #if its not the current date
         df.index = [i for i in range(1 , len(df) + 1)]
-        return df[:-1] #dont show the last day value
+        return df[:-1] #dont show the last a value
 
