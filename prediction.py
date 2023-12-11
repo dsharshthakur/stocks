@@ -3,7 +3,6 @@ import pandas as pd
 import tensorflow as tf
 from sklearn.preprocessing import MinMaxScaler
 
-
 # loading the model
 def load_model():
     model = tf.keras.models.load_model("trainedmodel.h5")
@@ -17,7 +16,6 @@ scaler = MinMaxScaler(feature_range=(0, 1))
 def transformdata(stockdata, column="Close", window_size=100):
 
     data = stockdata
-
     x = data[column]
 
     x_scaled = scaler.fit_transform(x.values.reshape(-1, 1))
@@ -99,8 +97,6 @@ def Forecast(dataframe, future_days=0, column="Close"):
     # unscaling
     y_unscaled = scaler.inverse_transform(np.array(all_predicted_y).reshape(1, -1))
     y_unscaled = y_unscaled.tolist()[0]
-    print("yunscaled 1,", len(y_unscaled))
-    print("total days ",future_days)
     return y_unscaled
 
 
