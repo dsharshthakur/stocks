@@ -28,7 +28,6 @@ st.title("Stock Prediction")
 #initialization
 companies = None
 company_names = None
-currency_rate = None
 
 #sidebar
 with st.sidebar as sbar:
