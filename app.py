@@ -99,8 +99,8 @@ if selected_comp != " ":
                 end_date = pd.to_datetime(end_date)
             except:
                 st.warning("Invalid date Format.")
-                start_date = min(data["Date"].dt)
-                end_date = max(data["Date"].dt)
+                start_date = min(data["Date"])
+                end_date = max(data["Date"])
                 
             if end_date <= start_date:
                 # display a warning message if user enters a end_date which is less than the start_date.
