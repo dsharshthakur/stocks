@@ -1,7 +1,7 @@
 import time
 import pandas as pd
 import streamlit as st
-
+from forex_python.converter import CurrencyRates
 #own helping module
 from HelpingFunctions import AboutSection
 from HelpingFunctions import Conclusion
@@ -28,7 +28,7 @@ st.title("Stock Prediction")
 #initialization
 companies = None
 company_names = None
-
+# currencyrate = 1
 
 #sidebar
 with st.sidebar as sbar:
@@ -62,27 +62,49 @@ with st.sidebar as sbar:
     if companies is not None:
         st.markdown(f"<h1 style ='text-align: center; color: green'>{len(companies)}</h1>", unsafe_allow_html=True)
         st.markdown(f"<h4 style ='text-align: center'>Companies Available ", unsafe_allow_html=True)
+    #radio button
+    currency_radio = st.radio(label = "Choose Currency", options = ["INR" , "USD"])
 
-#initialization
+
+# initialization
 data = None
 past_data = None
 current_date =  pd.to_datetime("today").date()
+
+in_usd = True
+in_inr = False
+
 if selected_comp != " ":
 
     # load data
     cls_obj = DataLoad()
+
     data = cls_obj.load_data(tickertbl=companies, company=selected_comp)
-    if len(data.columns) > 7:
-        st.warning("This company is delisted from NSE or the name has me changed.")
-        data = None
-        selected_comp = " "
 
+    print("Original ___________________________________", data)
+    if data is not None :
+        if len(data.columns) > 7:
+            st.warning("This company is delisted from NSE or the name has been changed.")
+            data = None
+            selected_comp = " "
+        else:
+            # update the currency rate to USD
+            if currency_radio == "INR":
+                currency_rate = cls_obj.currencyrate(convert_to = "INR")
 
-     #creating layout for page
+            else:
+                currency_rate = cls_obj.currencyrate(convert_to= "USD")
+
+            data[['Open', 'High', 'Low', 'Close', 'Adj Close']] = data[ ['Open', 'High', 'Low', 'Close','Adj Close']] * currency_rate
+
+            # converting currency to USD
+
+    #creating layout for page
     tab1, tab2, tab3, tab4 = st.tabs(["Details", "Forecast", "Performance", "About"])
 
     with tab1:
         if data is not None:
+            # currency conversion
             try:
                 #start date user input
                 start_date = st.text_input(label="Start Date", value=min(data["Date"].dt.strftime("%Y-%m-%d")))
@@ -90,10 +112,10 @@ if selected_comp != " ":
                 #end date user input
                 end_date = st.text_input(label="End Date", value=max(data["Date"].dt.strftime("%Y-%m-%d")))
                 end_date = pd.to_datetime(end_date)
-            
+
             except:
                 st.warning("Invalid date format. The Date should be in this format YYYY-MM-DD .")
-            
+
                 start_date = min(data["Date"])
                 end_date = max(data["Date"])
 
@@ -119,14 +141,32 @@ if selected_comp != " ":
                                                                                                    end_string)
                 st.markdown(sub_head1, unsafe_allow_html=True)
                 st.pyplot(trendline)
+
                 st.markdown("<br>", unsafe_allow_html=True)
 
                 #dataframe with past actual and predicted close stock price
-                past_data = PastDataFrame(data)
+                data_in_usd = data.copy()
+                curr_to_usd = cls_obj.currencyrate(convert_to="USD")
+                data_in_usd[['Open', 'High', 'Low', 'Close', 'Adj Close']] = data_in_usd[
+                                                                                 ['Open', 'High', 'Low', 'Close',
+                                                                                  'Adj Close']] * curr_to_usd
+
+                past_data = PastDataFrame(data_in_usd)
+                print("                               BEfore                      ")
+                print(past_data)
+
 
                 #past: predicted trend
-                past_prediction_trend = predictedtrend(past_data, startdate=start_date, enddate=end_date)
 
+                #currency as per user want
+                if currency_radio == "USD" :
+                    pass
+                else:
+                    usd_to_inr =  CurrencyRates().get_rate("USD" , "INR")
+                    past_data[["Actual", "Predictions"]] = past_data[["Actual", "Predictions"]] * usd_to_inr
+
+
+                past_prediction_trend = predictedtrend(past_data, startdate=start_date, enddate=end_date)
                 sub_head3 = "<h4 style = 'text-align: center;'>Actual VS Prediction</h4>"
                 st.markdown(sub_head3, unsafe_allow_html=True)
                 st.pyplot(past_prediction_trend)
@@ -138,11 +178,11 @@ if selected_comp != " ":
                             unsafe_allow_html=True)
 
 
-                pbar = pastbargraph(past_df =past_data, startdate=start_date, enddate=end_date)
+                pbar = pastbargraph(past_df = past_data, startdate = start_date, enddate=end_date)
                 st.pyplot(pbar)
 
         else:
-            st.info("Data For this company is not available.")
+            st.info("Either data For this company is not available or there was some connection issue you can , Sorry for the inconvenience, please try again.")
 
 # future prediction
 futuredf = None
@@ -216,14 +256,21 @@ if selected_comp != " ":
                     next_date = current_date + pd.Timedelta(days=user_input_days)
                     st.markdown("<p style = 'text-align: center'>{}</p>".format(next_date), unsafe_allow_html=True)
 
-                #stock data copy
-                data_2 = data.copy()
-                future = Forecast(dataframe=data_2, future_days=user_input_days)
-                futuredf = ForecastDataFrame(predicted_values=future, future_days=user_input_days)
+                #currency in USD for future data frame also
 
-                # future / forecast    graph
+                future = Forecast(dataframe= data_in_usd, future_days=user_input_days)
+                futuredf = ForecastDataFrame(predicted_values = future, future_days=user_input_days)
 
-                future_trend = futuretrend(futuredf=futuredf, currentdf=data_2)
+                #currency as per user want
+                if currency_radio == "USD":
+                    pass
+                else:
+                    usd_to_inr = CurrencyRates().get_rate("USD", "INR")
+                    futuredf["Predictions"] =  futuredf["Predictions"] * usd_to_inr
+
+
+                # future / forecast  graph
+                future_trend = futuretrend(futuredf=futuredf, currentdf= data)
                 st.pyplot(future_trend)
 
                 # display future / forecast table
