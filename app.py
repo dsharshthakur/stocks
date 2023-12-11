@@ -28,6 +28,7 @@ st.title("Stock Prediction")
 #initialization
 companies = None
 company_names = None
+# currencyrate = 1
 
 #sidebar
 with st.sidebar as sbar:
@@ -72,7 +73,7 @@ current_date =  pd.to_datetime("today").date()
 
 in_inr = True
 in_usd = False
-
+# currency_rate = None
 if selected_comp != " ":
 
     # load data
@@ -80,8 +81,7 @@ if selected_comp != " ":
 
     data = cls_obj.load_data(tickertbl=companies, company=selected_comp)
 
-    print("___________________________________Original ___________________________________")
-    print(data)
+
 
     if data is not None :
         if len(data.columns) > 7:
@@ -149,27 +149,25 @@ if selected_comp != " ":
 
                 st.markdown("<br>", unsafe_allow_html=True)
 
-                #dataframe with past actual and predicted close stock price
+                #dataframe with past actual and past predicted close stock price
                 data_in_usd = data.copy()
                 if in_usd == True:
                     pass
                 else:
-                    curr_to_usd = cls_obj.currencyrate(convert_to="USD")
+                    curr_to_usd = CurrencyRates().get_rate("INR" , "USD")
                     data_in_usd[['Open', 'High', 'Low', 'Close', 'Adj Close']] = data_in_usd[
                                                                                  ['Open', 'High', 'Low', 'Close',
                                                                                   'Adj Close']] * curr_to_usd
 
-                past_data = PastDataFrame(data_in_usd)
-                print("                               BEfore                      ")
-                print(past_data)
-
-
                 #past: predicted trend
+                past_data = PastDataFrame(data_in_usd)
+
 
                 #currency as per user want
                 if currency_radio == "USD" :
                     pass
                 else:
+                    #conversion for USD to INR
                     usd_to_inr =  CurrencyRates().get_rate("USD" , "INR")
                     past_data[["Actual", "Predictions"]] = past_data[["Actual", "Predictions"]] * usd_to_inr
 
@@ -217,14 +215,13 @@ if selected_comp != " ":
 
                 # fetch today's(current day) data
                 current_price ,today_open_price, today_high_price = cls_obj.todaysinfo()
-
                 if in_inr == True:
                     currency_rate = cls_obj.currencyrate(convert_to = "INR")
                 else:
                     currency_rate = cls_obj.currencyrate(convert_to = "USD")
-                
-                current_price, today_open_price, today_high_price=  [i if str(i).isalpha() else i * currency_rate for i in [current_price ,today_open_price, today_high_price ]]
-                
+
+                current_price, today_open_price, today_high_price=  [i*currency_rate if isinstance(i,float) else i  for i  in [current_price ,today_open_price, today_high_price ]]
+
                 with col1:
 
                     st.markdown("<h6  style = 'text-align:center'>Today's Date </h6>", unsafe_allow_html=True)
@@ -233,20 +230,28 @@ if selected_comp != " ":
                 with col2:
 
                     st.markdown("<h6  style = 'text-align:center'>Open Price</h6>", unsafe_allow_html=True)
-                    st.markdown("<p  style = 'text-align:center ; color:blue;'>{:.2f}</p>".format(today_open_price), unsafe_allow_html=True)
+                    st.markdown("<p  style = 'text-align:center ; color:blue;'>{}</p>".format(today_open_price), unsafe_allow_html=True)
 
                 with col3:
                     st.markdown("<h6  style = 'text-align:center'>High Price</h6>", unsafe_allow_html=True)
-                    st.markdown("<p  style = 'text-align:center ; color:blue;'>{:.2f}</p>".format(today_high_price), unsafe_allow_html=True)
+                    st.markdown("<p  style = 'text-align:center ; color:blue;'>{}</p>".format(today_high_price), unsafe_allow_html=True)
                 with col4:
                     # current_day_open =data[data["Date"] == pd.to_datetime("today").date()]["Open"].round(2).to_string(index=False)
                     st.markdown("<h6  style = 'text-align:center'>Current Price</h6>", unsafe_allow_html=True)
-                    st.markdown("<p  style = 'text-align:center ; color:blue;'>{:.2f}</p>".format(current_price), unsafe_allow_html=True)
+                    st.markdown("<p  style = 'text-align:center ; color:blue;'>{}</p>".format(current_price), unsafe_allow_html=True)
 
                 with col5:
                     st.markdown("<h6 style = 'text-align:center '>Close Price (predicted)</h6>", unsafe_allow_html=True)
-                    current_day_predicted = Forecast(data, future_days=0)
-                    current_day_predicted = round(current_day_predicted[0], 2)
+                    current_day_predicted = Forecast(data_in_usd, future_days=0)
+                    print("current_day_predicted", current_day_predicted)
+                    if in_usd == True :
+                        current_day_predicted = round(current_day_predicted[0], 2)
+
+                    else:
+                        curr_to_inr =  CurrencyRates().get_rate("USD" , "INR")
+                        current_day_predicted = current_day_predicted[0] *  curr_to_inr
+
+                        current_day_predicted = round(current_day_predicted , 2)
 
                     st.markdown("<p style = 'text-align:center ; color:lightgreen;'>{}</p>".format(current_day_predicted),
                                 unsafe_allow_html=True)
@@ -334,7 +339,7 @@ if selected_comp != " ":
 
                 #yesterdaty predicted price
                 yesterday_predicted_price = previous_day1["Predictions"].round(2).to_string(index=False)
-                st.markdown(f"<p style = 'text-align:center'>{yesterday_predicted_price}</p>", unsafe_allow_html=True)
+                st.markdown("<p style = 'text-align:center'>{:.2f}</p>".format(float(yesterday_predicted_price)), unsafe_allow_html=True)
 
             with col2:
                 st.markdown("<h6 style = 'text-align:center'>Actual</h6>", unsafe_allow_html=True)
