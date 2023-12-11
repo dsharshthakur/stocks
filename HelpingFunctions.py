@@ -202,7 +202,7 @@ def performancegraph(predicted, actual):
         "Values": [predicted, actual]
     }
     sns.set_style("darkgrid")
-    fig = plt.figure(figsize=(12, 4))
+    fig = plt.figure(figsize=(12, 5))
     sns.barplot(data=dt, x="labels", y="Values", width=0.25)
     plt.xlabel("Predicted & Actual")
     plt.ylabel("Closing Price")
