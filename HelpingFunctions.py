@@ -9,15 +9,17 @@ from forex_python.converter import  CurrencyRates
 def companyticker(country=None, all_comp=False):
     if country == "Indian Companies" and all_comp == False:
         indian_comp = pd.read_excel("tickerinfo.xlsx", sheet_name="indian", header=0)
-        indian_comp.sort_values(by="name", inplace=True)
+        indian_comp.drop_duplicates(subset = ["name" , "ticker"] , inplace = True)
+        indian_comp.reset_index(drop = True)
         return indian_comp
 
     elif country == "Foreign Companies" and all_comp == False:
         foreign_comp = pd.read_excel("tickerinfo.xlsx", sheet_name="international", header=0)
+        foreign_comp.drop_duplicates(subset= ["name", "ticker"], inplace = True)
+        foreign_comp.reset_index(drop=True)
 
         # indian_rupees = 83.43
         # foreign_comp["Close"] = foreign_comp["Close"] * indian_rupees
-        foreign_comp.sort_values(by="name", inplace=True)
         return foreign_comp
 
     else:
@@ -26,6 +28,7 @@ def companyticker(country=None, all_comp=False):
         foreign_comp = pd.read_excel("tickerinfo.xlsx", sheet_name="international", header=0).sort_values(
             by="name").reset_index(drop=True)
         all_companies = pd.concat([indian_comp, foreign_comp], axis=0, ignore_index=True)
+        all_companies.drop_duplicates(subset= ["name", "ticker"], inplace = True)
 
         return all_companies
 
@@ -38,8 +41,6 @@ class DataLoad:
             stockdata.reset_index(inplace = True) #reset the index to (0 to n), as the default index is datecolumn
 
             stockdata= stockdata[stockdata["Date"].dt.date < pd.to_datetime("today").date()]  #only fetch data upto the previous date. i.e, dont fetch the today's (current) data.
-
-
 
         except :
             print("Data for this company is not available.")
