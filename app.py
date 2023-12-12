@@ -21,10 +21,19 @@ from prediction import Forecast
 from prediction import ForecastDataFrame
 from prediction import PastDataFrame
 
-
+st.markdown(
+    """
+    <style>
+        .stApp {
+            margin-top:-25px
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 #page title
-st.markdown("<h1 style ='text-align: center'>StockMinds</h1>", unsafe_allow_html=True)
 
+st.markdown("<h1 style =' text-align: center'>StockMinds</h1>", unsafe_allow_html=True)
 
 #initialization
 companies = None
@@ -64,7 +73,7 @@ with st.sidebar as sbar:
         st.markdown(f"<h1 style ='text-align: center; color: green'>{len(companies)}</h1>", unsafe_allow_html=True)
         st.markdown(f"<h4 style ='text-align: center'>Companies Available ", unsafe_allow_html=True)
     #radio button
-    currency_radio = st.radio(label = "Choose a currency:", options = ["INR" , "USD"])
+    currency_radio = st.radio(label = "Choose Currency", options = ["INR" , "USD"])
 
 
 # initialization
@@ -116,16 +125,23 @@ if selected_comp != " ":
                 start_date = st.text_input(label="Start Date (YYYY-MM-DD)", value=min(data["Date"].dt.strftime("%Y-%m-%d")))
                 start_date = pd.to_datetime(start_date)
                 #end date user input
-                end_date = st.text_input(label="End Date (YYYY-MM-DD)", value=max(data["Date"].dt.strftime("%Y-%m-%d")))
+                end_date = st.text_input(label="End Date (YYYY-MM-DD)", value=max(data["Date"].dt.strftime("%Y-%m-%d")), )
                 end_date = pd.to_datetime(end_date)
 
             except:
-                st.warning("Invalid date format. The Date should be in this format YYYY-MM-DD .")
 
                 start_date = min(data["Date"])
                 end_date = max(data["Date"])
+                st.warning("Invalid date format. The Date should be in this format YYYY-MM-DD .")
+                st.success("Showing result based on the default date.")
 
-            if end_date <= start_date:
+            if start_date is pd.NaT or end_date is pd.NaT :
+                st.warning("Date can not be empty.")
+                start_date = min(data["Date"])
+                end_date = max(data["Date"])
+
+
+            elif end_date <= start_date:
                 # display a warning message if user enters a end_date which is less than the start_date.
                 st.warning("Start Date should be before the end date.")
 
@@ -157,8 +173,8 @@ if selected_comp != " ":
                 else:
                     curr_to_usd = CurrencyRates().get_rate("INR" , "USD")
                     data_in_usd[['Open', 'High', 'Low', 'Close', 'Adj Close']] = data_in_usd[
-                                                                                 ['Open', 'High', 'Low', 'Close',
-                                                                                  'Adj Close']] * curr_to_usd
+                                                                                     ['Open', 'High', 'Low', 'Close',
+                                                                                      'Adj Close']] * curr_to_usd
 
                 #past: predicted trend
                 past_data = PastDataFrame(data_in_usd)
@@ -197,11 +213,11 @@ futuredf = None
 if selected_comp != " ":
     with tab2:
         toggle = st.toggle(label="Forecast", key="toggle_1")
-        if toggle == True :
+        if toggle == True:
 
             #display disclaimer  for future prediction
             displaydisclaimer()
-            chck_box1 = st.checkbox(label="I Understand, Please Continue.")
+            chck_box1 = st.checkbox(label="I Understand, Please Continue." , key = "chck_box1")
 
             if chck_box1 == True:
                 st.info("Thank you for your understanding and responsible use of our stock prediction tool. ")
@@ -221,7 +237,7 @@ if selected_comp != " ":
                 else:
                     currency_rate = cls_obj.currencyrate(convert_to = "USD")
 
-                current_price, today_open_price, today_high_price=  [i*currency_rate if isinstance(i,float) else i  for i  in [current_price ,today_open_price, today_high_price ]]
+                current_price, today_open_price, today_high_price=  ["{:.2f}".format(i*currency_rate) if isinstance(i,float) else i  for i  in [current_price ,today_open_price, today_high_price ]]
 
                 with col1:
 
@@ -254,7 +270,7 @@ if selected_comp != " ":
 
                         current_day_predicted = round(current_day_predicted , 2)
 
-                    st.markdown("<p style = 'text-align:center ; color:green;'>{}</p>".format(current_day_predicted),
+                    st.markdown("<p style = 'text-align:center ; color:lightgreen;'>{}</p>".format(current_day_predicted),
                                 unsafe_allow_html=True)
 
                 st.markdown("<hr>", unsafe_allow_html=True)
@@ -306,51 +322,50 @@ if selected_comp != " ":
                 st.markdown("<p> The table shows the next {} days predicted stock price.<p>".format(user_input_days),
                             unsafe_allow_html=True)
 
-                st.dataframe(displaytbl,
-                             use_container_width=True)  # display from next 1 day i.e excluding current day data
+                st.dataframe(displaytbl,use_container_width=True)  # display from next 1 day i.e excluding current day data
 
 # performance area
 if selected_comp != " ":
 
     with tab3:
-        if st.session_state.get("toggle_1") == False:
-            st.info("Please first read the disclaimer in the forecast section.")
-            chck_box = True
 
-        else:
+        if  st.session_state.get("toggle_1") == True and  st.session_state.get("chck_box1") == True:
 
             st.markdown('<h5>• Wanna see how our model performed yesterday ?</h5>', unsafe_allow_html=True)
             st.markdown('<hr>', unsafe_allow_html=True)
             st.markdown("<h5 style = 'text-align:center'>Yesterday</h5>", unsafe_allow_html=True)
 
             if (current_date - data.iloc[-1]["Date"].date()).days > 1:
-                st.info("Showing result for {} as market was closed yesterday.".format(data.iloc[-1]["Date"].date().strftime("%Y-%m-%d")))
+                st.info("Showing result for {} as market was closed yesterday.".format(
+                    data.iloc[-1]["Date"].date().strftime("%Y-%m-%d")))
 
             # layout
             col1, col2 = st.columns(2)
 
             with col1:
-                #yesterday date
+                # yesterday date
 
                 previous_day1_date = data.iloc[-1]["Date"].date()
 
-                #yesterday data
-                previous_day1 = past_data[past_data["Date"].dt.date == previous_day1_date]  # str(round(past_data[-1:],4))
+                # yesterday data
+                previous_day1 = past_data[
+                    past_data["Date"].dt.date == previous_day1_date]  # str(round(past_data[-1:],4))
 
                 st.markdown("<h6 style = 'text-align:center'> Predicted</h6>", unsafe_allow_html=True)
 
-                #yesterdaty predicted price
+                # yesterdaty predicted price
                 yesterday_predicted_price = previous_day1["Predictions"].round(2).to_string(index=False)
-                st.markdown("<p style = 'text-align:center'>{:.2f}</p>".format(float(yesterday_predicted_price)), unsafe_allow_html=True)
+                st.markdown("<p style = 'text-align:center'>{:.2f}</p>".format(float(yesterday_predicted_price)),
+                            unsafe_allow_html=True)
 
             with col2:
                 st.markdown("<h6 style = 'text-align:center'>Actual</h6>", unsafe_allow_html=True)
 
-                #yesterday actual price
+                # yesterday actual price
                 yesterday_actual_price = previous_day1["Actual"].round(2).to_string(index=False)
-                st.markdown(f"<p style = 'text-align:center'>{yesterday_actual_price}</p>", unsafe_allow_html=True)
+                st.markdown("<p style = 'text-align:center'>{:.2f}</p>".format(float(yesterday_actual_price)), unsafe_allow_html=True)
 
-            #bar graph for comparing yesterday Predicted aand actual price
+            # bar graph for comparing yesterday Predicted aand actual price
             pgraph = performancegraph(yesterday_predicted_price, yesterday_actual_price)
             st.pyplot(pgraph)
 
@@ -362,6 +377,9 @@ if selected_comp != " ":
                 with st.chat_message("Harsh") as bot:
                     bot_reply = Conclusion(yesterday_predicted_price, yesterday_actual_price)
                     st.write(bot_reply)
+
+        else:
+            st.info("Please first read the disclaimer in the forecast section.")
 
 # About section
 if selected_comp != " ":
