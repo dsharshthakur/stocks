@@ -273,7 +273,7 @@ if selected_comp != " ":
 
                         current_day_predicted = round(current_day_predicted , 2)
 
-                    st.markdown("<p style = 'text-align:center ; color:lightgreen;'>{}</p>".format(current_day_predicted),
+                    st.markdown("<p style = 'text-align:center ; color:green;'>{}</p>".format(current_day_predicted),
                                 unsafe_allow_html=True)
 
                 st.markdown("<hr>", unsafe_allow_html=True)
