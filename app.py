@@ -313,7 +313,7 @@ if selected_comp != " ":
 if selected_comp != " ":
 
     with tab3:
-        if st.session_state.get("toggle_1") == False  or st.session_state.get("chck_box1") == False:
+        if st.session_state.get("chck_box1") == False:
             st.info("Please first read the disclaimer in the forecast section.")
 
         else:
