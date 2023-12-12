@@ -189,7 +189,7 @@ def displaydisclaimer():
                 ''', unsafe_allow_html=True)
 
 
-def Conclusion(predicted, actual):
+def conclusion(predicted, actual):
     difference = float(actual) - float(predicted)
 
     if difference == 0:
@@ -221,7 +221,7 @@ def performancegraph(predicted, actual):
     return fig
 
 
-def AboutSection():
+def aboutsection():
     st.markdown(
         """
         **Understanding Stock Prediction Models:**
@@ -287,7 +287,7 @@ def AboutSection():
     )
 
 
-def WelcomeNote():
+def welcomenote():
     st.markdown(
         """
         <h2> Welcome to Your Personal Stock Prediction Hub! </h2> 📈 
