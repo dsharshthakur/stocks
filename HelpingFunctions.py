@@ -297,7 +297,8 @@ def welcomenote():
 
         <h5> What's in Store for You?</h5>
         Explore the fascinating realm of financial forecasting as we delve into the intricate patterns and trends that shape the stock market. My custom-built model is designed to analyze historical stock data, unravel complex market dynamics, and make predictions that might just give you the edge in your investment decisions.
-        <br>
+        
+        
         <h5>How to Navigate:</h5>
         <ol>
             <li><strong>Choose Your Stock:</strong> Select the stock you're interested in, and let the magic unfold.</li>
