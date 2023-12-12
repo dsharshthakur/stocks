@@ -3,10 +3,10 @@ import pandas as pd
 import streamlit as st
 from forex_python.converter import CurrencyRates
 #own helping module
-from HelpingFunctions import AboutSection
-from HelpingFunctions import Conclusion
+from HelpingFunctions import aboutsection
+from HelpingFunctions import conclusion
 from HelpingFunctions import displaydisclaimer
-from HelpingFunctions import WelcomeNote
+from HelpingFunctions import welcomenote
 from HelpingFunctions import companyticker
 from HelpingFunctions import futuretrend
 from HelpingFunctions import DataLoad
@@ -20,7 +20,6 @@ from HelpingFunctions import trend
 from prediction import Forecast
 from prediction import ForecastDataFrame
 from prediction import PastDataFrame
-
 st.markdown(
     """
     <style>
@@ -31,30 +30,18 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+
+
 #page title
 
 st.markdown("<h1 style =' text-align: center'>StockMinds</h1>", unsafe_allow_html=True)
-
-
-
-progress_text = "Operation in progress. Please wait."
-my_bar = st.progress(0, text=progress_text)
-
-for percent_complete in range(100):
-    time.sleep(0.01)
-    my_bar.progress(percent_complete + 1, text=progress_text)
-time.sleep(1)
-my_bar.empty()
-
-
-
-
-
 
 #initialization
 companies = None
 company_names = None
 # currencyrate = 1
+
 
 #sidebar
 with st.sidebar as sbar:
@@ -131,7 +118,7 @@ if selected_comp != " ":
             # converting currency to USD
 
     #creating layout for page
-    tab1, tab2, tab3, tab4 = st.tabs(["Details", "Forecast", "Performance", "About"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Home", "Forecast", "Performance", "About"])
 
     with tab1:
         if data is not None:
@@ -392,7 +379,7 @@ if selected_comp != " ":
             # chat bot (optional)
             with st.container() as ChatContainer:
                 with st.chat_message("Harsh") as bot:
-                    bot_reply = Conclusion(yesterday_predicted_price, yesterday_actual_price)
+                    bot_reply = conclusion(yesterday_predicted_price, yesterday_actual_price)
                     st.write(bot_reply)
 
         else:
@@ -401,8 +388,8 @@ if selected_comp != " ":
 # About section
 if selected_comp != " ":
     with tab4:
-        AboutSection()
+        aboutsection()
 
 #Welcome page / message  (page 1)
 if selected_comp == " ":
-    WelcomeNote()
+    welcomenote()
