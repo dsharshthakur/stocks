@@ -20,6 +20,7 @@ from HelpingFunctions import trend
 from prediction import Forecast
 from prediction import ForecastDataFrame
 from prediction import PastDataFrame
+
 st.markdown(
     """
     <style>
@@ -33,6 +34,22 @@ st.markdown(
 #page title
 
 st.markdown("<h1 style =' text-align: center'>StockMinds</h1>", unsafe_allow_html=True)
+
+
+
+progress_text = "Operation in progress. Please wait."
+my_bar = st.progress(0, text=progress_text)
+
+for percent_complete in range(100):
+    time.sleep(0.02)
+    my_bar.progress(percent_complete + 1, text=progress_text)
+time.sleep(1)
+my_bar.empty()
+
+
+
+
+
 
 #initialization
 companies = None
