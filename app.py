@@ -197,7 +197,7 @@ futuredf = None
 if selected_comp != " ":
     with tab2:
         toggle = st.toggle(label="Forecast", key="toggle_1")
-        if toggle == True:
+        if toggle == True :
 
             #display disclaimer  for future prediction
             displaydisclaimer()
@@ -313,7 +313,7 @@ if selected_comp != " ":
 if selected_comp != " ":
 
     with tab3:
-        if st.session_state.get("toggle_1") == False:
+        if st.session_state.get("toggle_1") == False  and chck_box1 == False:
             st.info("Please first read the disclaimer in the forecast section.")
 
         else:
