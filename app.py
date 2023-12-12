@@ -113,10 +113,10 @@ if selected_comp != " ":
             # currency conversion
             try:
                 #start date user input
-                start_date = st.text_input(label="Start Date", value=min(data["Date"].dt.strftime("%Y-%m-%d")))
+                start_date = st.text_input(label="Start Date (YYYY-MM-DD)", value=min(data["Date"].dt.strftime("%Y-%m-%d")))
                 start_date = pd.to_datetime(start_date)
                 #end date user input
-                end_date = st.text_input(label="End Date", value=max(data["Date"].dt.strftime("%Y-%m-%d")))
+                end_date = st.text_input(label="End Date (YYYY-MM-DD)", value=max(data["Date"].dt.strftime("%Y-%m-%d")))
                 end_date = pd.to_datetime(end_date)
 
             except:
