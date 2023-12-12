@@ -57,16 +57,20 @@ class DataLoad:
         TodayInfo = yf.Ticker(self.selected_comp_ticker)
         try:
             TodayOpen = TodayInfo.info['open']
+
         except:
             TodayOpen = "Not Available"
 
         try:
             RecentPrice =   TodayInfo.info['currentPrice']
+
+
         except:
             RecentPrice =  "Not Available"
 
         try :
             TodayHigh = TodayInfo["dayhigh"]
+
         except :
             TodayHigh = "Not Available"
 
