@@ -19,7 +19,7 @@ from HelpingFunctions import trend
 #own predicton module
 from prediction import Forecast
 from prediction import ForecastDataFrame
-from prediction import PastDataFram
+from prediction import PastDataFrame
 st.markdown(
     """
     <style>
