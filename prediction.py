@@ -124,9 +124,8 @@ def ForecastDataFrame(predicted_values, future_days=0):
     df = pd.DataFrame()
     df["Date"] = pd.bdate_range(start=start_from, end = end)
 
-    df["Predictions"] = ["{:.2f}".format(i) for i in predicted_values]
-    df["Predictions"] = [float(i) for i in df["Predictions"]]
-
+    df["Predictions"] = predicted_values
+    
     if start_from == pd.to_datetime("today").date(): #if the start date is same as  current date
         return df[1:] #show from nex today . i.e dont the current day price
     else: #if its not the current date
