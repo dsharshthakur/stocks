@@ -19,8 +19,7 @@ from HelpingFunctions import trend
 #own predicton module
 from prediction import Forecast
 from prediction import ForecastDataFrame
-from prediction import PastDataFrame
-
+from prediction import PastDataFram
 st.markdown(
     """
     <style>
@@ -315,6 +314,7 @@ if selected_comp != " ":
                 # display future / forecast table
                 displaytbl = futuredf.copy()
                 displaytbl["Date"] = displaytbl["Date"].dt.date
+                displaytbl["Predictions"] = ["{:.2f}".format(i) for i in displaytbl["Predictions"]] #round off upto 2 decimal places, IMPORTANT: the values will be converted from float to string with this approach.
 
                 st.markdown("<br>", unsafe_allow_html=True)
                 st.markdown("<h5 style = 'text-align:center'>Forecast Table</h5>", unsafe_allow_html=True)
