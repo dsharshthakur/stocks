@@ -192,7 +192,11 @@ if selected_comp != " ":
                     pass
                 else:
                     #conversion for USD to INR
-                    usd_to_inr =  CurrencyRates().get_rate("USD" , "INR")
+                    try:
+                        usd_to_inr =  CurrencyRates().get_rate("USD" , "INR")
+                    except:
+                        usd_to_inr= 0.012
+                        
                     past_data[["Actual", "Predictions"]] = past_data[["Actual", "Predictions"]] * usd_to_inr
 
 
