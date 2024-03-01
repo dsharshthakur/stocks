@@ -319,7 +319,12 @@ if selected_comp != " ":
                 if currency_radio == "USD":
                     pass
                 else:
-                    usd_to_inr = CurrencyRates().get_rate("USD", "INR")
+                    try:
+                        usd_to_inr = CurrencyRates().get_rate("USD", "INR")
+                    except:
+                        usd_to_inr = 0.012
+                        
+                    
                     futuredf["Predictions"] =  futuredf["Predictions"] * usd_to_inr
 
 
