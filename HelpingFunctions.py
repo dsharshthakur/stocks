@@ -82,7 +82,7 @@ class DataLoad:
         try:
             curr_rate = CurrencyRates().get_rate(original_curr , convert_to )
         except:
-            curr_rate = 82.89
+            curr_rate = 0.012
         return  curr_rate
 
 def trend(data, column, startdate=None, enddate=None):
