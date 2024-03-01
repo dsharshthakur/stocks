@@ -174,7 +174,11 @@ if selected_comp != " ":
                 if in_usd == True:
                     pass
                 else:
-                    curr_to_usd = CurrencyRates().get_rate("INR" , "USD")
+                    try:
+                        curr_to_usd = CurrencyRates().get_rate("INR" , "USD")
+                    else:
+                        curr_to_usd = 82.89 
+                    
                     data_in_usd[['Open', 'High', 'Low', 'Close', 'Adj Close']] = data_in_usd[
                                                                                      ['Open', 'High', 'Low', 'Close',
                                                                                       'Adj Close']] * curr_to_usd
