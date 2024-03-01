@@ -276,7 +276,11 @@ if selected_comp != " ":
                         current_day_predicted = round(current_day_predicted[0], 2)
 
                     else:
-                        curr_to_inr =  CurrencyRates().get_rate("USD" , "INR")
+                        try:
+                            curr_to_inr =  CurrencyRates().get_rate("USD" , "INR")
+                        except:
+                            curr_to_inr = 0.012
+                            
                         current_day_predicted = current_day_predicted[0] *  curr_to_inr
 
                         current_day_predicted = round(current_day_predicted , 2)
