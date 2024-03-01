@@ -176,7 +176,7 @@ if selected_comp != " ":
                 else:
                     try:
                         curr_to_usd = CurrencyRates().get_rate("INR" , "USD")
-                    else:
+                    except:
                         curr_to_usd = 82.89 
                     
                     data_in_usd[['Open', 'High', 'Low', 'Close', 'Adj Close']] = data_in_usd[
